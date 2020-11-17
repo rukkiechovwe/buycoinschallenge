@@ -60,7 +60,7 @@ const query = `
   }
 }
 `;
-const gitToken = "d4b63b644c699e103d60fcf6388bb4fc8c34f6cd"
+const gitToken = "1db60bffd42b3cdaab01ad8d18478cf46d5794ae"
 const url = "https://api.github.com/graphql"; // this is base graphql endpoint
 const opts = {
   method: "POST",
