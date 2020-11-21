@@ -1,3 +1,4 @@
+// toogle navbar
 const openBtn = document.querySelector(".fa-bars");
 const nav = document.querySelector(".h-one");
 const wrapper = document.querySelector(".wrapper");
@@ -6,11 +7,12 @@ openBtn.addEventListener("click", () => {
 })
 const navToggledisplay = (elem, wrapper) => {
   elem.style.visibility = elem.style.visibility === 'visible' ? 'hidden' : 'visible';
-  wrapper.style.marginTop = wrapper.style.marginTop === "220px" ? "0" : "220px"
+  elem.style.height = elem.style.height === 'auto' ? '0' : 'auto';
+  elem.style.opacity = elem.style.opacity === '1' ? '0' : '1';
+  wrapper.style.marginTop = wrapper.style.marginTop === "335px" ? "0" : "335px"
 }
 
-
-
+// fetch data from github graphql api
 const query = `
 	query{
   viewer {
@@ -21,8 +23,6 @@ const query = `
         id
         updatedAt
         description
-        url
-        viewerHasStarred
         forks {
           totalCount
         }
@@ -60,7 +60,7 @@ const query = `
   }
 }
 `;
-const url = "https://api.github.com/graphql"; // this is base graphql endpoint
+const url = "https://api.github.com/graphql";
 const opts = {
   method: "POST",
   headers: { "Content-Type": "application/json", "Authorization": `Bearer ${gitToken}` },
@@ -87,7 +87,9 @@ window.onload = async () => {
 
     // render list of repos
     let reposParent = document.querySelector("#repo");
-    const repoNodes = json.data.viewer.repositories.nodes;
+    const repoNodes = json.data.viewer.repositories.nodes.sort(
+      (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+    );
     for (let i = 0; i < repoNodes.length; i++) {
       let repo = repoNodes[i];
       // do not display repo description with null value
@@ -98,6 +100,10 @@ window.onload = async () => {
       let lang = {};
       if (repo.languages.nodes.length === 0) {
         lang.name = '';
+      }
+      else if (repo.languages.nodes.length === 2 || repo.languages.nodes.length === 3) {
+        lang.name = repo.languages.nodes[1].name;
+        lang.color = repo.languages.nodes[1].color;
       } else {
         lang.name = repo.languages.nodes[0].name;
         lang.color = repo.languages.nodes[0].color;
@@ -117,9 +123,9 @@ window.onload = async () => {
                   <span class="lang-color" style="background-color:${lang.color};"></span>
                   ${lang.name}
                 </span>
-                <span><i class="far fa-star"></i>${repo.stargazerCount}</span>
-                <span><i class="fas fa-code-branch"></i>${repo.forks.totalCount}</span>
-                <span>Updated ${new Date(repo.updatedAt).toDateString()}</span>
+                ${displayStar(repo.stargazerCount)}
+                ${displayFork(repo.forks.totalCount)}
+                <span>${timeAgo(repo.updatedAt)}</span>
               </div>
             </div >
             <div class="rc-bt-ll">
@@ -133,4 +139,4 @@ window.onload = async () => {
     console.log(e)
   }
 
-}
+} 
