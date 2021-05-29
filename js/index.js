@@ -1,9 +1,6 @@
-// (A) GET THE PARAMETERS
 var params = new URLSearchParams(window.location.search),
   username = params.get("username");
 
-// (B) IT WORKS!
-console.log(username);
 const query = `query MyQuery {
   user(login: "${username}") {
     avatarUrl(size: 200)
