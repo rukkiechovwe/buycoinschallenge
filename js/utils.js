@@ -1,3 +1,29 @@
+const languageDisplay = (langLength,langNodes) => {
+  // do not display language with null value
+  const lang = {};
+  if (langLength !== 0) {
+    lang.name = langNodes[langLength - 1].name;
+    lang.color = langNodes[langLength - 1].color;
+  }
+  return langLength !== 0
+    ? `<span class="row-vm">
+    <span
+      class="lang-color"
+      style="background-color:${lang.color};"
+    ></span>
+    ${lang.name}
+  </span>`
+    : `<span style="display:none"></span>`;
+};
+
+const starDisplay = (starNum) => {
+  if (starNum === 0) {
+    return `<i class="far fa-star"></i>Unstar`;
+  } else {
+    return `<i class="far fa-star"></i>Star`;
+  }
+};
+
 // do not display star gazers with null value
 const displayStar = (stargazer) => {
   if (stargazer === 0) {
